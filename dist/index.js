@@ -5991,7 +5991,7 @@ const github = __importStar(__webpack_require__(438));
             return core.setFailed(`Valid Pull Request number is missing from context`);
         }
         if (hasAssigneeOrAssignees(context)) {
-            return core.setFailed(`Assignee/s already exist/s: [${getAssigneeOrAssignees(context)}]`);
+            return core.info(`Assignee/s already exist/s: [${getAssigneeOrAssignees(context)}]`);
         }
         core.setSecret(token);
         const octokit = github.getOctokit(token);
@@ -6026,12 +6026,15 @@ function hasAssigneeOrAssignees(context) {
 }
 function getAssigneeOrAssignees(context) {
     var _a, _b, _c, _d, _e, _f, _g;
-    let assignees = ((_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.assignee) ? [(_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.pull_request) === null || _d === void 0 ? void 0 : _d.assignee] : [];
+    let assignees = ((_b = (_a = context === null || context === void 0 ? void 0 : context.payload) === null || _a === void 0 ? void 0 : _a.pull_request) === null || _b === void 0 ? void 0 : _b.assignee) ? [(_d = (_c = context === null || context === void 0 ? void 0 : context.payload) === null || _c === void 0 ? void 0 : _c.pull_request) === null || _d === void 0 ? void 0 : _d.assignee]
+        : [];
     (_g = (_f = (_e = context === null || context === void 0 ? void 0 : context.payload) === null || _e === void 0 ? void 0 : _e.pull_request) === null || _f === void 0 ? void 0 : _f.assignees) === null || _g === void 0 ? void 0 : _g.forEach((assignee) => {
         assignees.push(assignee);
     });
     if ((assignees === null || assignees === void 0 ? void 0 : assignees.length) > 0) {
-        return assignees;
+        return assignees
+            .map((assignee) => assignee.login)
+            .join(', ');
     }
     return null;
 }
